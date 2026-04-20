@@ -1,0 +1,44 @@
+# OpenClaw Gateway — Web Service (Dockerfile build từ ghcr.io + entrypoint).
+# Repo: https://github.com/hatientai176-lab/OpenClaw
+#
+# Biến có sync: false → Render hỏi giá trị khi tạo Blueprint lần đầu; sau đó chỉnh trên Dashboard.
+# Tab Environment (ví dụ): https://dashboard.render.com/web/<service-id>/env
+
+services:
+  - type: web
+    name: openclaw-gateway
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    autoDeploy: true
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOME
+        value: /home/node
+      - key: ENABLE_RENDER_KEEPALIVE
+        value: "true"
+      - key: KEEPALIVE_INTERVAL_SEC
+        value: "600"
+      # Bắt buộc thực tế: dán vào Control UI; tạo: openssl rand -hex 32
+      - key: OPENCLAW_GATEWAY_TOKEN
+        sync: false
+      # Kênh Telegram (nếu bật)
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      # Model (chọn một — tùy agent)
+      - key: OPENAI_API_KEY
+        sync: false
+      # Tuỳ chọn: nếu dùng Gemini / Anthropic thay vì OpenAI — thêm tay trên Dashboard
+      # GEMINI_API_KEY, ANTHROPIC_API_KEY
+      # HTTP trên onrender.com — một số flow cần (xem docs OpenClaw)
+      - key: OPENCLAW_ALLOW_INSECURE_PRIVATE_WS
+        value: "1"
+
+  # Persistent Disk: bật trên Dashboard → Disk → mount /home/node/.openclaw (plan có hỗ trợ disk)
+  # Hoặc bỏ comment:
+  # disk:
+  #   name: openclaw-data
+  #   mountPath: /home/node/.openclaw
+  #   sizeGB: 2
