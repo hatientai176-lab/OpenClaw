@@ -1,13 +1,14 @@
 #!/bin/sh
 set -e
 
-PORT="${PORT:-18789}"
+# Render yêu cầu process bind PORT trong vòng 5 phút.
+# render-proxy.mjs bind PORT ngay lập tức, rồi spawn OpenClaw nội bộ.
+# Nếu OpenClaw crash → proxy tự restart, KHÔNG exit → Render KHÔNG timeout.
+
+PORT="${PORT:-10000}"
 export PORT
 
-# Fix for OpenClaw security block on Render (non-loopback access via Render's proxy)
+# Bắt buộc khi OpenClaw bind non-loopback (lan):
 export OPENCLAW_GATEWAY_CONTROLUI_DANGEROUSLYALLOWHOSTHEADERORIGINFALLBACK="true"
-
-# Tối ưu NODE_OPTIONS
-export NODE_OPTIONS="--max-old-space-size=400"
 
 exec node /app/render-proxy.mjs
