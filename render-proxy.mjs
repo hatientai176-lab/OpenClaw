@@ -48,7 +48,8 @@ function spawnOpenclaw() {
         PORT: String(OC_PORT),
         HOME: process.env.HOME || '/home/node',
         // Bắt buộc khi bind lan (non-loopback):
-        OPENCLAW_GATEWAY_CONTROLUI_DANGEROUSLYALLOWHOSTHEADERORIGINFALLBACK: 'true',
+        OPENCLAW_GATEWAY__CONTROLUI__DANGEROUSLYALLOWHOSTHEADERORIGINFALLBACK: 'true',
+        OPENCLAW_GATEWAY__CONTROLUI__ALLOWEDORIGINS: '["*"]',
       },
       stdio: 'inherit',
     });
